@@ -65,52 +65,56 @@
         </button>
       </div>
     </form>
-    <div class="container">
-      <h4>Rumus:</h4>
-      <ul>
-        <li>R = (X<sub>max</sub>-X<sub>min</sub>) + 1
-            {{ (rangeOfMeasure.string) ? ` = ${rangeOfMeasure.string}` : null }}
-            {{ (rangeOfMeasure.result) ? ` = ${rangeOfMeasure.result}` : null }}
-        </li>
-        <li>k = 1 + 3.3 log n {{ calcInterval }}</li>
-        <li>i = R/k {{ resultInterval }}</li>
-        <!-- <li>grafik histogram, dan grafik poligon</li>
-        <li>Mean, Median, modus</li>
-        <li>Kwartil, desil, persentil, jenjang persentil</li>
-        <li>Range, Mean Deviation (MD), Standard Deviation (SD)</li> -->
-      </ul>
+    <div class="card">
+      <div class="card-body">
+        <h4 style="padding-left: 15px">Rumus:</h4>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">R = (X<sub>max</sub>-X<sub>min</sub>) + 1
+              <strong>{{ (rangeOfMeasure.string) ? ` = ${rangeOfMeasure.string}` : null }}</strong>
+              <strong>{{ (rangeOfMeasure.result) ? ` = ${rangeOfMeasure.result}` : null }}</strong>
+          </li>
+          <li  class="list-group-item">k = 1 + 3.3 log n <strong>{{ calcInterval }}</strong></li>
+          <li  class="list-group-item">i = R/k <strong>{{ resultInterval }}</strong></li>
+          <!-- <li>grafik histogram, dan grafik poligon</li>
+          <li>Mean, Median, modus</li>
+          <li>Kwartil, desil, persentil, jenjang persentil</li>
+          <li>Range, Mean Deviation (MD), Standard Deviation (SD)</li> -->
+        </ul>
+
+        <div style="margin-top: 20px;">
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Kelas Interval</th>
+                <th scope="col">f</th>
+                <th scope="col">x</th>
+                <th scope="col">x<sup>2</sup></th>
+                <th scope="col">fx</th>
+                <th scope="col">fx<sup>2</sup></th>
+                <th scope="col">fk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="f in listIntervalClass.reverse()">
+                <!-- Interval class -->
+                <td>{{ f[0] }}</td>
+                <!-- Frequency (f) -->
+                <td>{{ f[1] }}</td>
+                <!-- Middle class (x) -->
+                <td>{{ getMiddleClass(f[0]) }}</td>
+                <!-- Middle class sup 2 (x2) -->
+                <td>{{ getSup(getMiddleClass(f[0])) }}</td>
+                <!-- Frequency middle (fx) -->
+                <td>{{ getFreqMiddle(f[1], getMiddleClass(f[0])) }}</td>
+                <!-- Frequency middle sup 2 (fx2) -->
+                <td>{{ getFreqMiddle(f[1], getSup(getMiddleClass(f[0]))) }}</td>
+                <td>&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <hr>
-    <table class="table table-striped">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Kelas Interval</th>
-          <th scope="col">f</th>
-          <th scope="col">x</th>
-          <th scope="col">x<sup>2</sup></th>
-          <th scope="col">fx</th>
-          <th scope="col">fx<sup>2</sup></th>
-          <th scope="col">fk</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="f in listIntervalClass.reverse()">
-          <!-- Interval class -->
-          <td>{{ f[0] }}</td>
-          <!-- Frequency (f) -->
-          <td>{{ f[1] }}</td>
-          <!-- Middle class (x) -->
-          <td>{{ getMiddleClass(f[0]) }}</td>
-          <!-- Middle class sup 2 (x2) -->
-          <td>{{ getSup(getMiddleClass(f[0])) }}</td>
-          <!-- Frequency middle (fx) -->
-          <td>{{ getFreqMiddle(f[1], getMiddleClass(f[0])) }}</td>
-          <!-- Frequency middle sup 2 (fx2) -->
-          <td>{{ getFreqMiddle(f[1], getSup(getMiddleClass(f[0]))) }}</td>
-          <td>&nbsp;</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
