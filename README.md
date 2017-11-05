@@ -1,6 +1,6 @@
-# web-statistika
+# Web Statistika
 
-> An Application for easier do statistic
+> A Web Application for to be easier do calculate statistic
 
 ## Build Setup
 

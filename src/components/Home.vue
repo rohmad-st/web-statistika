@@ -170,7 +170,6 @@
         this.resultInterval = `= ${i}`;
         const cumulatives = this.listIntervalClass.map(e => e[1]);
         this.freqCumulatives = this.getFreqCumulative(cumulatives).reverse();
-        return true;
       },
       getMiddleClass(data) {
         const splitData = data.split('-');
