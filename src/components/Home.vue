@@ -94,13 +94,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="frequency in listIntervalClass">
-          <td>{{ frequency[0] }}</td>
-          <td>{{ frequency[1] }}</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
+        <tr v-for="f in listIntervalClass">
+          <td>{{ f[0] }}</td>
+          <td>{{ f[1] }}</td>
+          <td>{{ getMiddleClass(f[0]) }}</td>
+          <td>{{ getSup(getMiddleClass(f[0])) }}</td>
+          <td>{{ getFreqMiddle(f[0], f[1]) }}</td>
+          <td>{{ getFreqMiddle(f[0], getSup(getMiddleClass(f[0]))) }}</td>
           <td>&nbsp;</td>
         </tr>
       </tbody>
@@ -157,6 +157,18 @@
         this.resultInterval = `= ${i}`;
         return true;
       },
+      getMiddleClass(data) {
+        const splitData = data.split('-');
+        const xMax = parseFloat(splitData[1]) || 0;
+        const xMin = parseFloat(splitData[0]) || 0;
+        return ((xMax + xMin) / 2);
+      },
+      getSup(value) {
+        return parseFloat(value) * parseFloat(value);
+      },
+      getFreqMiddle(f, x) {
+        return parseFloat(f) * parseFloat(x);
+      },
       sumIntervalClass() {
         const hist = {};
         this.intervalClasses.forEach((c) => {
@@ -173,7 +185,6 @@
             return true;
           });
         });
-
         return Object.keys(hist).map(key => [key, hist[key]]);
       },
       toggleInterval(e) {
