@@ -161,7 +161,9 @@
         const splitData = data.split('-');
         const xMax = parseFloat(splitData[1]) || 0;
         const xMin = parseFloat(splitData[0]) || 0;
-        return ((xMax + xMin) / 2);
+        const tmpResult = xMax + xMin;
+        const result = (tmpResult % 2 === 0) ? tmpResult : (tmpResult + 1);
+        return (result / 2);
       },
       getSup(value) {
         return parseFloat(value) * parseFloat(value);
