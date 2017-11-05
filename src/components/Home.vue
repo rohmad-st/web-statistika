@@ -85,6 +85,7 @@
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
+                <th scope="col">#</th>
                 <th scope="col">Kelas Interval</th>
                 <th scope="col">f</th>
                 <th scope="col">x</th>
@@ -95,7 +96,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="f in listIntervalClass.reverse()">
+              <tr v-for="(f, i) in listIntervalClass.reverse()">
+                <td>{{ i + 1 }}.</td>
                 <!-- Interval class -->
                 <td>{{ f[0] }}</td>
                 <!-- Frequency (f) -->
@@ -108,7 +110,7 @@
                 <td>{{ getFreqMiddle(f[1], getMiddleClass(f[0])) }}</td>
                 <!-- Frequency middle sup 2 (fx2) -->
                 <td>{{ getFreqMiddle(f[1], getSup(getMiddleClass(f[0]))) }}</td>
-                <td>&nbsp;</td>
+                <td>{{ freqCumulatives[i] }}</td>
               </tr>
             </tbody>
           </table>
@@ -146,6 +148,7 @@
         calcInterval: null,
         txtInterval: 0,
         resultInterval: null,
+        freqCumulatives: [],
       };
     },
     methods: {
@@ -165,6 +168,8 @@
         this.intervalClasses = intervalClasses;
         this.listIntervalClass = this.sumIntervalClass();
         this.resultInterval = `= ${i}`;
+        const cumulatives = this.listIntervalClass.map(e => e[1]);
+        this.freqCumulatives = this.getFreqCumulative(cumulatives).reverse();
         return true;
       },
       getMiddleClass(data) {
@@ -198,6 +203,9 @@
           });
         });
         return Object.keys(hist).map(key => [key, hist[key]]);
+      },
+      getFreqCumulative(cumulatives) {
+        return cumulatives.reduce((a, x, i) => [...a, x + (a[i - 1] || 0)], []);
       },
       toggleInterval(e) {
         if (e) {
