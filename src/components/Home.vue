@@ -94,13 +94,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="f in listIntervalClass">
+        <tr v-for="f in listIntervalClass.reverse()">
+          <!-- Interval class -->
           <td>{{ f[0] }}</td>
+          <!-- Frequency (f) -->
           <td>{{ f[1] }}</td>
+          <!-- Middle class (x) -->
           <td>{{ getMiddleClass(f[0]) }}</td>
+          <!-- Middle class sup 2 (x2) -->
           <td>{{ getSup(getMiddleClass(f[0])) }}</td>
-          <td>{{ getFreqMiddle(f[0], f[1]) }}</td>
-          <td>{{ getFreqMiddle(f[0], getSup(getMiddleClass(f[0]))) }}</td>
+          <!-- Frequency middle (fx) -->
+          <td>{{ getFreqMiddle(f[1], getMiddleClass(f[0])) }}</td>
+          <!-- Frequency middle sup 2 (fx2) -->
+          <td>{{ getFreqMiddle(f[1], getSup(getMiddleClass(f[0]))) }}</td>
           <td>&nbsp;</td>
         </tr>
       </tbody>
