@@ -69,7 +69,7 @@
       <div class="card-body">
         <h4 style="padding-left: 15px">Rumus:</h4>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">R = (X<sub>max</sub>-X<sub>min</sub>) + 1
+          <li class="list-group-item">R = (X<sub>max</sub> - X<sub>min</sub>) + 1
               <strong>{{ (rangeOfMeasure.string) ? ` = ${rangeOfMeasure.string}` : null }}</strong>
               <strong>{{ (rangeOfMeasure.result) ? ` = ${rangeOfMeasure.result}` : null }}</strong>
           </li>
@@ -81,39 +81,60 @@
           <li>Range, Mean Deviation (MD), Standard Deviation (SD)</li> -->
         </ul>
 
-        <div style="margin-top: 20px;">
-          <table class="table table-striped">
+        <div class="container-inner">
+          <h4>Tabel Distribusi Frekuensi</h4>
+          <table class="table table-striped" ref="tblFrequency">
             <thead class="thead-dark">
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Kelas Interval</th>
-                <th scope="col">f</th>
-                <th scope="col">x</th>
-                <th scope="col">x<sup>2</sup></th>
-                <th scope="col">fx</th>
-                <th scope="col">fx<sup>2</sup></th>
-                <th scope="col">fk</th>
+                <th scope="col" class="text-center">Kelas Interval</th>
+                <th scope="col" class="text-right">f</th>
+                <th scope="col" class="text-right">x</th>
+                <th scope="col" class="text-right">x<sup>2</sup></th>
+                <th scope="col" class="text-right">fx</th>
+                <th scope="col" class="text-right">fx<sup>2</sup></th>
+                <th scope="col" class="text-right">fk</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(f, i) in listIntervalClass.reverse()">
                 <td>{{ i + 1 }}.</td>
                 <!-- Interval class -->
-                <td>{{ f[0] }}</td>
+                <td class="text-center">{{ f[0] }}</td>
                 <!-- Frequency (f) -->
-                <td>{{ f[1] }}</td>
+                <td class="text-right">{{ f[1] }}</td>
                 <!-- Middle class (x) -->
-                <td>{{ getMiddleClass(f[0]) }}</td>
+                <td class="text-right">{{ getMiddleClass(f[0]) }}</td>
                 <!-- Middle class sup 2 (x2) -->
-                <td>{{ getSup(getMiddleClass(f[0])) }}</td>
+                <td class="text-right">{{ getSup(getMiddleClass(f[0])) }}</td>
                 <!-- Frequency middle (fx) -->
-                <td>{{ getFreqMiddle(f[1], getMiddleClass(f[0])) }}</td>
+                <td class="text-right">{{ getFreqMiddle(f[1], getMiddleClass(f[0])) }}</td>
                 <!-- Frequency middle sup 2 (fx2) -->
-                <td>{{ getFreqMiddle(f[1], getSup(getMiddleClass(f[0]))) }}</td>
-                <td>{{ freqCumulatives[i] }}</td>
+                <td class="text-right">{{ getFreqMiddle(f[1], getSup(getMiddleClass(f[0]))) }}</td>
+                <td class="text-right">{{ freqCumulatives[i] }}</td>
               </tr>
             </tbody>
+            <thead class="thead-light">
+              <tr>
+                <th scope="col" colspan="2" class="text-center">&sum;</th>
+                <th scope="col" class="text-right">{{ totalFreq }}</th>
+                <th scope="col" class="text-right">&nbsp;</th>
+                <th scope="col" class="text-right">&nbsp;</th>
+                <th scope="col" class="text-right">{{ totalFreqMiddle }}</th>
+                <th scope="col" class="text-right">{{ totalFreqMiddleSup }}</th>
+                <th scope="col" class="text-right">{{ totalFreqCumulative }}</th>
+              </tr>
+            </thead>
           </table>
+        </div>
+
+        <div class="container-inner">
+          <h4>Mean, Median, modus</h4>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Mean</strong> = x̄ = &sum;fx / f = {{ mean }}</li>
+            <li class="list-group-item"><strong>Median</strong> = Mdn = Bb + [(1/2N - fxb) /fd] i = {{ median }}</li>
+            <li class="list-group-item"><strong>Modus</strong> = {{ modus }}</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -149,6 +170,13 @@
         txtInterval: 0,
         resultInterval: null,
         freqCumulatives: [],
+        totalFreq: 0,
+        totalFreqMiddle: 0,
+        totalFreqMiddleSup: 0,
+        totalFreqCumulative: 0,
+        mean: 0,
+        median: 0,
+        modus: 0,
       };
     },
     methods: {
@@ -170,6 +198,24 @@
         this.resultInterval = `= ${i}`;
         const cumulatives = this.listIntervalClass.map(e => e[1]);
         this.freqCumulatives = this.getFreqCumulative(cumulatives).reverse();
+
+        // get sum of all
+        const freqList = this.frequencies.map(f => f[1]);
+        this.totalFreq = this.sum(freqList);
+        const list = this.listIntervalClass.reverse();
+        const freqMiddles = list.map((f) => {
+          const result = this.getFreqMiddle(f[1], this.getMiddleClass(f[0]));
+          return result;
+        });
+        const freqMiddleSups = list.map((f) => {
+          const result = this.getFreqMiddle(f[1], this.getSup(this.getMiddleClass(f[0])));
+          return result;
+        });
+        list.forEach((f, x) => {
+          this.totalFreqCumulative += parseFloat(this.freqCumulatives[x]);
+        });
+        this.totalFreqMiddle = this.sum(freqMiddles);
+        this.totalFreqMiddleSup = this.sum(freqMiddleSups);
       },
       getMiddleClass(data) {
         const splitData = data.split('-');
@@ -214,9 +260,15 @@
           this.txtInterval = 0;
         }
       },
+      sum(arr) {
+        if (!arr) return 0;
+        return arr.reduce((sum, x) => sum + x);
+      },
     },
     watch: {
-      //
+      totalFreqMiddle(e) {
+        this.mean = Math.ceil(e / this.totalFreq);
+      },
     },
   };
 </script>
